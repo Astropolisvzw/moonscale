@@ -22,7 +22,7 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
         # Send message back to client
         message = json.dumps(results)
-
+        print(message)
         # Write content as utf-8 data
         self.wfile.write(bytes(message, "utf8"))
         return
