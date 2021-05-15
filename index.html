@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WebSocket demo</title>
+        <link rel="stylesheet" href="styles.css"/>
+    </head>
+    <body>
+        <div class="bg">
+            <div class="textbox"><div class="moontext">TEST</div></div>
+        <script>
+            var ws = new WebSocket("ws://127.0.0.1:5678/");
+            ws.onmessage = function (event) {
+                var obj = JSON.parse(event.data);
+                document.getElementsByClassName('moontext')[0].innerHTML = obj['Moon'] + ' kg';
+            };
+        </script>
+        </div>
+    </body>
+</html>

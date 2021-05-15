@@ -24,6 +24,7 @@
 # 67P-CG 0.000 017 g
 
 import numpy as np
+import json
 
 weight_names = ["Sun",
                 "Mercury",
@@ -34,7 +35,7 @@ weight_names = ["Sun",
                 "Phobos",
                 "Deimos",
                 "Ceres",
-                "Jupite",
+                "Jupiter",
                 "Io",
                 "Europa",
                 "Ganymede",
@@ -73,15 +74,19 @@ weight_factor = [28.02,
                  0.000017
                  ]
 
-#
-assert len(weight_names) == len(weight_factor
-)
-def get_planet_weights(earth_weight):
+assert len(weight_names) == len(weight_factor)
+
+def get_planet_weights(earth_weight, rounding):
     earth_weights = [earth_weight]*len(weight_factor)
-    print(f"earth_weights = {earth_weights}")
-    print(f"weight_factor = {weight_factor}")
-    results=np.multiply(earth_weights,weight_factor)
+    # print(f"earth_weights = {earth_weights}")
+    # print(f"weight_factor = {weight_factor}")
+    results=np.around(np.multiply(earth_weights,weight_factor), decimals=rounding)
     return results
+
+# returns a json list where the key is the planet name and the value is the weight on that planet
+def get_weight_json(earth_weight, rounding=2):
+    return json.dumps(dict(zip(weight_names, get_planet_weights(earth_weight, rounding))))
+
 
 if __name__== "__main__":
   print(f"result is: {get_planet_weights(100)}")
