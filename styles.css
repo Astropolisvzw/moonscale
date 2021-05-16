@@ -17,22 +17,24 @@
 
 .textbox{
   position: fixed;
-  top: 70%;
+  top: 80%;
   left: 50%;
   width: 300px;
-  height: 100px;
+  height: 200px;
   -moz-border-radius:30px;
   -webkit-border-radius:30px;
   border-radius:30px;
   border: #solid 10px #000;
-  background-color: rgba(150,150,150,0.8);
-  margin-top: -50px; /* Negative half of height. */ 
+  background-color: rgba(150,150,200,0.7);
+  margin-top: -100px; /* Negative half of height. */ 
   margin-left: -150px; /* Negative half of width. */
 }
 
 .moontext{
   text-align: center;
+  text-shadow: 2px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+  color: white;
   vertical-align: middle;
-  line-height: 100px;
-  font-size: 42px;
+  line-height: 200px;
+  font-size: 84px;
 }
