@@ -1,9 +1,7 @@
 import aioesphomeapi
 import asyncio
 import websockets
-import random
 import datetime
-import json
 import planet_weight
 import math
 # pip install websocket
