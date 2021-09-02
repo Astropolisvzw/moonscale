@@ -44,7 +44,7 @@ weight_names = ["Sun",
                 "Titan",
                 "Enceladus",
                 "Uranus",
-                "Neptun",
+                "Neptune",
                 "Triton",
                 "Pluto",
                 "Eris",
@@ -76,7 +76,7 @@ weight_factor = [28.02,
 
 assert len(weight_names) == len(weight_factor)
 
-def get_planet_weights(earth_weight, rounding):
+def get_planet_weights(earth_weight, rounding=2):
     earth_weights = [earth_weight]*len(weight_factor)
     # print(f"earth_weights = {earth_weights}")
     # print(f"weight_factor = {weight_factor}")
@@ -89,4 +89,5 @@ def get_weight_json(earth_weight, rounding=2):
 
 
 if __name__== "__main__":
-  print(f"result is: {get_planet_weights(100)}")
+  print(f"result is: {get_weight_json(100)}")
+  print(f"Raw result is: {get_planet_weights(100)}")

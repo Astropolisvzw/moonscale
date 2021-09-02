@@ -11,17 +11,18 @@ import math
 def get_now():
     return datetime.datetime.now()
 
-weight_key = 2691377687
+weight_key = 520680920
 weight = 0
 weight_date = get_now()
 planet_weight_zero = planet_weight.get_weight_json(weight)
 
 async def main():
+    print("Astropolis scale starting ...")
     """Connect to an ESPHome device and get details."""
     loop = asyncio.get_running_loop()
 
     # Establish connection
-    api = aioesphomeapi.APIClient(loop, "astroscale.local", 6053, "1WkzndV8oAZ5sqbe47rc")
+    api = aioesphomeapi.APIClient(loop, "esp_scale_1.local", 6053, "1WkzndV8oAZ5sqbe47rc")
     await api.connect(login=True)
 
     # Get API version of the device's firmware
@@ -54,12 +55,9 @@ async def weight_socket(websocket, path):
     await websocket.send(check_stale_weight(planet_weight.get_weight_json(weight), planet_weight_zero, weight_date))
     try:
         while True:
-            try:
-                # print(f"Sending type: {type(weight)}, weight: {weight}")
-                await websocket.send(check_stale_weight(planet_weight.get_weight_json(weight), planet_weight_zero, weight_date))
-                await asyncio.sleep(1)
-            except Exception as e:
-                print("Websocket error", e)
+            # print(f"Sending type: {type(weight)}, weight: {weight}")
+            await websocket.send(check_stale_weight(planet_weight.get_weight_json(weight), planet_weight_zero, weight_date))
+            await asyncio.sleep(1)
     finally:
         print("exiting weight socket")
 
