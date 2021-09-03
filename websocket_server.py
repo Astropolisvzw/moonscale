@@ -28,17 +28,26 @@ async def main():
     # Get API version of the device's firmware
     print(api.api_version)
 
+    # Show device details
+    device_info = await api.device_info()
+    print(device_info)
+
+    # List all entities of the device
+    entities = await api.list_entities_services()
+    print(entities)
 
     def change_callback(state):
-        global weight
-        global weight_date
-        """Print the state changes of the device.."""
-        print(f"state: {state}, isWeight:{state.key == weight_key}, state isnan: {math.isnan(state.state)}")
-        if state is not None and not math.isnan(state.state) and state.key == weight_key:
-            print("Setting weigth to ", state.state)
-            weight_date = get_now()
-            weight = state.state
-
+        try:
+            global weight
+            global weight_date
+            """Print the state changes of the device.."""
+            print(f"state: {state}, isWeight:{state.key == weight_key}, state isnan: {math.isnan(state.state)}")
+            if state is not None and not math.isnan(state.state) and state.key == weight_key:
+                weight_date = get_now()
+                weight = state.state
+                print(f"Setting {weight=} at date {weight_date}", state.state)
+        except Exception as e:
+            print("erroring out of callback", e)
     # Subscribe to the state changes
     await api.subscribe_states(change_callback)
 
@@ -52,26 +61,28 @@ def check_stale_weight(w, w_zero, w_date):
 async def weight_socket(websocket, path):
     global weight
     global weight_date
-    await websocket.send(check_stale_weight(planet_weight.get_weight_json(weight), planet_weight_zero, weight_date))
     try:
         while True:
-            # print(f"Sending type: {type(weight)}, weight: {weight}")
+            print(f"Sending type: {type(weight)}, weight: {weight}")
             await websocket.send(check_stale_weight(planet_weight.get_weight_json(weight), planet_weight_zero, weight_date))
             await asyncio.sleep(1)
     finally:
         print("exiting weight socket")
 
 start_server = websockets.serve(weight_socket, "127.0.0.1", 5678)
-
 loop = asyncio.get_event_loop()
 try:
     # asyncio.ensure_future(main())
     loop.create_task(main())
     loop.run_until_complete(start_server)
     loop.run_forever()
+except Exception as e:
+    print("catched exception", e)
 except KeyboardInterrupt:
+    print("Keyb interrupt")
     pass
 finally:
+    print("Closing loop.")
     loop.close()
 
 
