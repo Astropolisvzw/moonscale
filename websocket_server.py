@@ -48,6 +48,8 @@ async def main():
                 print(f"Setting {weight=} at date {weight_date}", state.state)
         except Exception as e:
             print("erroring out of callback", e)
+        except:
+            print("erroring out of callback 2")
     # Subscribe to the state changes
     await api.subscribe_states(change_callback)
 

@@ -1,0 +1,41 @@
+esphome:
+  name: esp_scale_1
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: !secret wifissid
+  password: !secret wifipassword
+
+sensor:
+  - platform: hx711
+    name: "HX711 Value"
+    dout_pin: D4
+    clk_pin: D3
+    gain: 128
+    update_interval: 1s
+    filters:
+         - calibrate_linear:
+             - -108700 -> 0
+             - -75000 -> 1
+    unit_of_measurement: kg
+
+    # filters:
+    #       - lambda: |-
+    #           auto first_mass = 105700.0; // first known mass was 0kg
+    #           auto first_value = 0; // value for the first known mass was 
+    #           auto second_mass = -75000; // second mass was 
+    #           auto second_value = 500; // second value was
+    #           auto r = map(x/1000, first_value, second_value, first_mass, second_mass);
+    #           if (r > 0) return r;
+    #           return 0;
+    # unit_of_measurement: g
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: !secret apipassword
+
+ota:
