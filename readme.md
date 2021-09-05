@@ -1,26 +1,12 @@
-# Usage of this Xiaomi Mi scale (v1) software
+# Usage of the esphome / hx711 / html software
 
 Install dependencies
 
 ```bash
-sudo apt-get install bluez python-bluez python-mysqldb
+sudo apt install python3 
 ```
-
-Installing PyBluez:
-```bash
-sudo apt-get install libbluetooth-dev
-sudo apt-get install python-dev
-sudo pip install PyBluez gattlib
-```
-
-Get the MAC address of your rpi3 or higher bluetooth device
 
 ```bash
-hcitool dev
+pip3 install esphome aioesphomeapi numpy
 ```
-
-Scan for bluetooth devices, find the scale:
-
-```bash
-hcitool scan
-```
+If there are complaints about numpy, also install libatlas-base-dev
