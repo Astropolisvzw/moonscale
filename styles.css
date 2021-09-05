@@ -1,5 +1,7 @@
  body, html {
   height: 100%;
+  overflow: hidden;
+  margin: 0px;
 }
 
 .bg {
@@ -19,7 +21,7 @@
   position: fixed;
   top: 80%;
   left: 50%;
-  width: 300px;
+  width: 400px;
   height: 200px;
   -moz-border-radius:30px;
   -webkit-border-radius:30px;

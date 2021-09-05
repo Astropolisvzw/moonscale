@@ -45,7 +45,7 @@ async def main():
             if state is not None and not math.isnan(state.state) and state.key == weight_key:
                 weight_date = get_now()
                 weight = state.state
-                print(f"Setting {weight=} at date {weight_date}", state.state)
+                print(f"Setting weight: {weight} at date {weight_date}", state.state)
         except Exception as e:
             print("erroring out of callback", e)
         except:
