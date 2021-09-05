@@ -4,8 +4,11 @@ esphome:
   board: d1_mini
 
 wifi:
-  ssid: !secret wifissid
-  password: !secret wifipassword
+  networks:
+    - ssid: !secret apollossid
+      password: !secret apollopassword
+    - ssid: !secret astroiotssid
+      password: !secret astroiotpassword
 
 sensor:
   - platform: hx711
