@@ -4,17 +4,15 @@ import websockets
 import datetime
 import planet_weight
 import math
-# pip install websocket
-# pip install aioesphomeapi (maybe)
-
-
-def get_now():
-    return datetime.datetime.now()
 
 weight_key = 520680920
 weight = 0
 weight_date = get_now()
 planet_weight_zero = planet_weight.get_weight_json(weight)
+
+def get_now():
+    return datetime.datetime.now()
+
 
 async def main():
     print("Astropolis scale starting ...")
@@ -71,22 +69,23 @@ async def weight_socket(websocket, path):
     finally:
         print("exiting weight socket")
 
-start_server = websockets.serve(weight_socket, "127.0.0.1", 5678)
-loop = asyncio.get_event_loop()
-try:
-    # asyncio.ensure_future(main())
-    loop.create_task(main())
-    loop.run_until_complete(start_server)
-    loop.run_forever()
-except Exception as e:
-    print("catched exception", e)
-except KeyboardInterrupt:
-    print("Keyb interrupt")
-    pass
-finally:
-    print("Closing loop.")
-    loop.close()
-
+while True:
+    start_server = websockets.serve(weight_socket, "127.0.0.1", 5678)
+    loop = asyncio.get_event_loop()
+    try:
+        # asyncio.ensure_future(main())
+        loop.create_task(main())
+        loop.run_until_complete(start_server)
+        loop.run_forever()
+    except Exception as e:
+        print("catched exception", e)
+    except KeyboardInterrupt:
+        print("Keyb interrupt")
+        pass
+    finally:
+        print("Closing loop.")
+        loop.close()
+    await asyncio.sleep(5)
 
 
 
