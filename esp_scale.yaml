@@ -19,8 +19,8 @@ sensor:
     update_interval: 1s
     filters:
          - calibrate_linear:
-             - -108700 -> 0
-             - -75000 -> 1
+             - -45000 -> 0
+             - 127443 -> 51 
     unit_of_measurement: kg
 
     # filters:

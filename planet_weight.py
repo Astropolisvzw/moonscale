@@ -76,11 +76,13 @@ weight_factor = [28.02,
 
 assert len(weight_names) == len(weight_factor)
 
-def get_planet_weights(earth_weight, rounding=2):
+def get_planet_weights(earth_weight, rounding=2, zero_floor=True):
     earth_weights = [earth_weight]*len(weight_factor)
     # print(f"earth_weights = {earth_weights}")
     # print(f"weight_factor = {weight_factor}")
     results=np.around(np.multiply(earth_weights,weight_factor), decimals=rounding)
+    if(zero_floor):
+      results=results.clip(results, min=0)
     return results
 
 # returns a json list where the key is the planet name and the value is the weight on that planet

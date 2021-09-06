@@ -66,7 +66,7 @@ async def weight_socket(websocket, path):
     try:
         while True:
             print(f"Sending type: {type(weight)}, weight: {weight}")
-            await websocket.send(check_stale_weight(planet_weight.get_weight_json(weight), planet_weight_zero, weight_date))
+            await websocket.send(check_stale_weight(planet_weight.get_weight_json(weight, rounding=1), planet_weight_zero, weight_date))
             await asyncio.sleep(1)
     finally:
         print("exiting weight socket")
