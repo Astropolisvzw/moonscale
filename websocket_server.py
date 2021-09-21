@@ -90,7 +90,7 @@ async def weight_socket(websocket, path):
 
 if __name__ == "__main__":
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     logging.basicConfig(format="%(asctime)s %(name)s: %(levelname)s %(message)s")
     start_server = websockets.serve(weight_socket, "127.0.0.1", 5678)
     while True:
