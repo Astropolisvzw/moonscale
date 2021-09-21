@@ -1,0 +1,10 @@
+[Unit]
+Description=Moonscale service
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi
+ExecStart=/home/pi/moonscale/start.sh
+
+[Install]
+WantedBy=multi-user.target

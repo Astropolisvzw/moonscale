@@ -25,6 +25,7 @@
 
 import numpy as np
 import json
+import logging
 
 weight_names = ["Sun",
                 "Mercury",
@@ -82,7 +83,7 @@ def get_planet_weights(earth_weight, rounding=2, zero_floor=True):
     # print(f"weight_factor = {weight_factor}")
     results=np.around(np.multiply(earth_weights,weight_factor), decimals=rounding)
     if zero_floor:
-        print("doing the zero floor")
+        logging.debug("Clipping weights to [0, inf[")
         results = np.clip(results, 0, None)
     return results
 

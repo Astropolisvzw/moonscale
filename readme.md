@@ -16,4 +16,5 @@ Installing the pi zero:
 
 - install raspbian lite
 - follow https://die-antwort.eu/techblog/2017-12-setup-raspberry-pi-for-kiosk-mode/
+- there's a systemd service file in the ./support dir which allows the moonscale to be started on boot, as the correct user, in the correct directory etc. Cron sucks.
 

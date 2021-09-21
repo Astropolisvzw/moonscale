@@ -6,6 +6,7 @@ import time
 import planet_weight
 import math
 import numpy as np
+import logging
 
 def get_now():
     return datetime.datetime.now()
@@ -31,7 +32,7 @@ def update_weight_array(new_weight):
     #print(f"Median is {weight_median}, len is {len(weight_median_array)}")
 
 async def main():
-    print("Astropolis scale starting ...")
+    logging.info("Astropolis scale starting ...")
     """Connect to an ESPHome device and get details."""
     loop = asyncio.get_running_loop()
 
@@ -40,31 +41,31 @@ async def main():
     await api.connect(login=True)
 
     # Get API version of the device's firmware
-    print(api.api_version)
+    logging.info(api.api_version)
 
     # Show device details
     device_info = await api.device_info()
-    print(device_info)
+    logging.info(device_info)
 
     # List all entities of the device
     entities = await api.list_entities_services()
-    print(entities)
+    logging.debug(f'Listing all entities: {entities}')
 
     def change_callback(state):
         try:
             global weight
             global weight_date
             """Print the state changes of the device.."""
-            print(f"state: {state}, isWeight:{state.key == weight_key}, state isnan: {math.isnan(state.state)}")
+            logging.debug(f"state: {state}, isWeight:{state.key == weight_key}, state isnan: {math.isnan(state.state)}")
             if state is not None and not math.isnan(state.state) and state.key == weight_key:
                 weight_date = get_now()
                 update_weight_array(state.state)
                 weight = state.state - weight_median
-                print(f"Setting weight: {weight} corrected with {weight_median} at date {weight_date}")
+                logging.debug(f"Setting weight: {weight} corrected with {weight_median} at date {weight_date}")
         except Exception as e:
-            print("erroring out of callback", e)
+            logging.error("erroring out of callback", e)
         except:
-            print("erroring out of callback 2")
+            logging.error("erroring out of callback 2")
     # Subscribe to the state changes
     await api.subscribe_states(change_callback)
 
@@ -81,29 +82,34 @@ async def weight_socket(websocket, path):
     try:
         while True:
             sending = check_stale_weight(planet_weight.get_weight_json(weight, rounding=1), planet_weight_zero, weight_date)
-            print(f"Sending WS: weight={weight}\n")
+            logging.debug(f"Sending WS: weight={weight}\n")
             await websocket.send(sending)
             await asyncio.sleep(1)
     finally:
         print("exiting weight socket")
 
-while True:
+if __name__ == "__main__":
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    logging.basicConfig(format="%(asctime)s %(name)s: %(levelname)s %(message)s")
     start_server = websockets.serve(weight_socket, "127.0.0.1", 5678)
-    loop = asyncio.get_event_loop()
-    try:
-        # asyncio.ensure_future(main())
-        loop.create_task(main())
-        loop.run_until_complete(start_server)
-        loop.run_forever()
-    except Exception as e:
-        print("catched exception", e)
-    except KeyboardInterrupt:
-        print("Keyb interrupt")
-        pass
-    finally:
-        print("Closing loop.")
-        loop.close()
-    time.sleep(5)
+    while True:
+        loop = asyncio.get_event_loop()
+        try:
+            # asyncio.ensure_future(main())
+            loop.create_task(main())
+            loop.run_until_complete(start_server)
+            loop.run_forever()
+        except Exception as e:
+            logging.error("catched exception", e)
+        except KeyboardInterrupt:
+            logging.error("Keyb interrupt")
+            pass
+        finally:
+            logging.info("Closing loop.")
+            #loop.close()
+            #websockets.close()
+        time.sleep(5)
 
 
 
