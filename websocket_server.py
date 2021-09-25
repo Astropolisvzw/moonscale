@@ -1,4 +1,5 @@
-import aioesphomeapi
+from aioesphomeapi import APIClient,ReconnectLogic, APIConnectionError, LogLevel
+import zeroconf
 import asyncio
 import websockets
 import datetime
@@ -37,19 +38,35 @@ async def main():
     loop = asyncio.get_running_loop()
 
     # Establish connection
-    api = aioesphomeapi.APIClient(loop, "esp_scale_1.local", 6053, "1WkzndV8oAZ5sqbe47rc")
-    await api.connect(login=True)
+    api = APIClient(loop, "esp_scale_1.local", 6053, "1WkzndV8oAZ5sqbe47rc", client_info="Moonscale")
 
-    # Get API version of the device's firmware
-    logging.info(api.api_version)
+    async def on_connect():
+        try:
+            await api.connect(login=True)
+            await api.subscribe_states(change_callback)
+            # Get API version of the device's firmware
+            logging.info(api.api_version)
 
-    # Show device details
-    device_info = await api.device_info()
-    logging.info(device_info)
+            # Show device details
+            device_info = await api.device_info()
+            logging.info(device_info)
 
-    # List all entities of the device
-    entities = await api.list_entities_services()
-    logging.debug(f'Listing all entities: {entities}')
+            # List all entities of the device
+            entities = await api.list_entities_services()
+            logging.debug(f'Listing all entities: {entities}')
+        except APIConnectionError:
+            api.disconnect()
+
+    async def on_disconnect():
+        logger.warning("Disconnected from API")
+
+    reconnect = ReconnectLogic(
+        client=api,
+        on_connect=on_connect,
+        on_disconnect=on_disconnect,
+    )
+    await reconnect.start()
+
 
     def change_callback(state):
         try:
@@ -66,8 +83,6 @@ async def main():
             logging.error("erroring out of callback", e)
         except:
             logging.error("erroring out of callback 2")
-    # Subscribe to the state changes
-    await api.subscribe_states(change_callback)
 
 
 def check_stale_weight(w, w_zero, w_date):
@@ -96,8 +111,7 @@ if __name__ == "__main__":
     while True:
         loop = asyncio.get_event_loop()
         try:
-            # asyncio.ensure_future(main())
-            loop.create_task(main())
+            asyncio.run(main())
             loop.run_until_complete(start_server)
             loop.run_forever()
         except Exception as e:
