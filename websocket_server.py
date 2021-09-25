@@ -42,7 +42,6 @@ async def main():
 
     async def on_connect():
         try:
-            await api.connect(login=True)
             await api.subscribe_states(change_callback)
             # Get API version of the device's firmware
             logging.info(api.api_version)
@@ -54,16 +53,19 @@ async def main():
             # List all entities of the device
             entities = await api.list_entities_services()
             logging.debug(f'Listing all entities: {entities}')
-        except APIConnectionError:
-            api.disconnect()
+        except APIConnectionError as e:
+            logging.error("Esphome api connection error", e)
+            await api.disconnect()
 
     async def on_disconnect():
         logger.warning("Disconnected from API")
-
+    
+    zc = zeroconf.Zeroconf()
     reconnect = ReconnectLogic(
         client=api,
         on_connect=on_connect,
         on_disconnect=on_disconnect,
+        zeroconf_instance=zc,
     )
     await reconnect.start()
 
