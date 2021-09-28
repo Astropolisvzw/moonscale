@@ -75,7 +75,7 @@ async def main():
 
     async def on_disconnect():
         logger.warning("Disconnected from API")
-    
+
     zc = zeroconf.Zeroconf()
     reconnect = ReconnectLogic(
         client=api,
@@ -84,23 +84,21 @@ async def main():
         zeroconf_instance=zc,
     )
     await reconnect.start()
-
+    await websockets.serve(weight_socket, "127.0.0.1", 5678, loop=loop)
     try:
         while True:
             try:
-                await start_server()°°°°
+                await asyncio.sleep(5)
             except Exception as e:
                 logging.error("catched exception", e)
             except KeyboardInterrupt:
                 logging.error("Keyb interrupt")
                 pass
-            finally:
-                logging.info("Closing loop.")
-            await asyncio.sleep(5)
     except KeyboardInterrupt:
         await reconnect.stop()
         zc.close()
-
+    finally:
+        logging.info("Closing loop.")
 
 def check_stale_weight(w, w_zero, w_date):
     time_diff = (get_now() - weight_date).total_seconds()
@@ -124,7 +122,6 @@ if __name__ == "__main__":
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     logging.basicConfig(format="%(asctime)s %(name)s: %(levelname)s %(message)s")
-    start_server = websockets.serve(weight_socket, "127.0.0.1", 5678)
     asyncio.run(main())
 
 
