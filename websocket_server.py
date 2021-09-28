@@ -37,6 +37,22 @@ async def main():
     """Connect to an ESPHome device and get details."""
     loop = asyncio.get_running_loop()
 
+    def change_callback(state):
+        try:
+            global weight
+            global weight_date
+            """Print the state changes of the device.."""
+            logging.debug(f"state: {state}, isWeight:{state.key == weight_key}, state isnan: {math.isnan(state.state)}")
+            if state is not None and not math.isnan(state.state) and state.key == weight_key:
+                weight_date = get_now()
+                update_weight_array(state.state)
+                weight = state.state - weight_median
+                logging.debug(f"Setting weight: {weight} corrected with {weight_median} at date {weight_date}")
+        except Exception as e:
+            logging.error("erroring out of callback", e)
+        except:
+            logging.error("erroring out of callback 2")
+
     # Establish connection
     api = APIClient(loop, "esp_scale_1.local", 6053, "1WkzndV8oAZ5sqbe47rc", client_info="Moonscale")
 
@@ -69,22 +85,21 @@ async def main():
     )
     await reconnect.start()
 
-
-    def change_callback(state):
-        try:
-            global weight
-            global weight_date
-            """Print the state changes of the device.."""
-            logging.debug(f"state: {state}, isWeight:{state.key == weight_key}, state isnan: {math.isnan(state.state)}")
-            if state is not None and not math.isnan(state.state) and state.key == weight_key:
-                weight_date = get_now()
-                update_weight_array(state.state)
-                weight = state.state - weight_median
-                logging.debug(f"Setting weight: {weight} corrected with {weight_median} at date {weight_date}")
-        except Exception as e:
-            logging.error("erroring out of callback", e)
-        except:
-            logging.error("erroring out of callback 2")
+    try:
+        while True:
+            try:
+                await start_server()°°°°
+            except Exception as e:
+                logging.error("catched exception", e)
+            except KeyboardInterrupt:
+                logging.error("Keyb interrupt")
+                pass
+            finally:
+                logging.info("Closing loop.")
+            await asyncio.sleep(5)
+    except KeyboardInterrupt:
+        await reconnect.stop()
+        zc.close()
 
 
 def check_stale_weight(w, w_zero, w_date):
@@ -110,23 +125,6 @@ if __name__ == "__main__":
     logger.setLevel(logging.INFO)
     logging.basicConfig(format="%(asctime)s %(name)s: %(levelname)s %(message)s")
     start_server = websockets.serve(weight_socket, "127.0.0.1", 5678)
-    while True:
-        loop = asyncio.get_event_loop()
-        try:
-            asyncio.run(main())
-            loop.run_until_complete(start_server)
-            loop.run_forever()
-        except Exception as e:
-            logging.error("catched exception", e)
-        except KeyboardInterrupt:
-            logging.error("Keyb interrupt")
-            pass
-        finally:
-            logging.info("Closing loop.")
-            #loop.close()
-            #websockets.close()
-        time.sleep(5)
-
-
+    asyncio.run(main())
 
 
