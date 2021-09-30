@@ -15,6 +15,7 @@
                 ws.onmessage = function (event) {
                     var obj = JSON.parse(event.data);
                     document.getElementsByClassName('moontext')[0].innerHTML = obj['Moon'] + ' kg';
+		    console.log("receiving" + obj['Moon'])
                 };
 
                 ws.onclose = function(e) {  

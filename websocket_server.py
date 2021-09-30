@@ -8,6 +8,7 @@ import planet_weight
 import math
 import numpy as np
 import logging
+import random
 
 def get_now():
     return datetime.datetime.now()
@@ -48,6 +49,7 @@ async def main():
                 update_weight_array(state.state)
                 weight = state.state - weight_median
                 logging.debug(f"Setting weight: {weight} corrected with {weight_median} at date {weight_date}")
+                weight =  random.randrange(0, 100)
         except Exception as e:
             logging.error("erroring out of callback", e)
         except:
@@ -111,16 +113,16 @@ async def weight_socket(websocket, path):
     global weight_date
     try:
         while True:
-            sending = check_stale_weight(planet_weight.get_weight_json(weight, rounding=1), planet_weight_zero, weight_date)
-            logging.debug(f"Sending WS: weight={weight}\n")
-            await websocket.send(sending)
+            to_send = check_stale_weight(planet_weight.get_weight_json(weight, rounding=1), planet_weight_zero, weight_date)
+            logging.debug(f"Sending WS: weight={to_send}\n")
+            await websocket.send(to_send)
             await asyncio.sleep(1)
     finally:
         print("exiting weight socket")
 
 if __name__ == "__main__":
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     logging.basicConfig(format="%(asctime)s %(name)s: %(levelname)s %(message)s")
     asyncio.run(main())
 
