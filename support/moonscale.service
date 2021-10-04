@@ -1,5 +1,6 @@
 [Unit]
 Description=Moonscale service
+After=network.target
 
 [Service]
 User=pi

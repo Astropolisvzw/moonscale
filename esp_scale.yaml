@@ -1,5 +1,5 @@
 esphome:
-  name: esp_scale_1
+  name: esp-scale-1
   platform: ESP8266
   board: d1_mini
 
@@ -9,6 +9,11 @@ wifi:
       password: !secret apollopassword
     - ssid: !secret astroiotssid
       password: !secret astroiotpassword
+  # manual_ip:
+    # Set this to the IP of the ESP
+    # static_ip: 192.168.5.110
+    # gateway: 192.168.5.1
+    # subnet: 255.255.255.0
 
 sensor:
   - platform: hx711
@@ -19,8 +24,8 @@ sensor:
     update_interval: 1s
     filters:
          - calibrate_linear:
-             - -48400 -> 0
-             - 1785732 -> 80 
+             - -54400 -> 0
+             - 1547573 -> 65 
     unit_of_measurement: kg
 
     # filters:

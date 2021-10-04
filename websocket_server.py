@@ -8,6 +8,7 @@ import planet_weight
 import math
 import numpy as np
 import logging
+import argparse
 import random
 
 def get_now():
@@ -33,7 +34,7 @@ def update_weight_array(new_weight):
     weight_median = np.median(weight_median_array)
     #print(f"Median is {weight_median}, len is {len(weight_median_array)}")
 
-async def main():
+async def main(args):
     logging.info("Astropolis scale starting ...")
     """Connect to an ESPHome device and get details."""
     loop = asyncio.get_running_loop()
@@ -49,14 +50,15 @@ async def main():
                 update_weight_array(state.state)
                 weight = state.state - weight_median
                 logging.debug(f"Setting weight: {weight} corrected with {weight_median} at date {weight_date}")
-                weight =  random.randrange(0, 100)
+                if args.random:
+                    weight =  random.randrange(0, 100)
         except Exception as e:
             logging.error("erroring out of callback", e)
         except:
             logging.error("erroring out of callback 2")
 
     # Establish connection
-    api = APIClient(loop, "esp_scale_1.local", 6053, "1WkzndV8oAZ5sqbe47rc", client_info="Moonscale")
+    api = APIClient(loop, "esp-scale-1.local", 6053, "1WkzndV8oAZ5sqbe47rc", client_info="Moonscale")
 
     async def on_connect():
         try:
@@ -122,8 +124,16 @@ async def weight_socket(websocket, path):
 
 if __name__ == "__main__":
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     logging.basicConfig(format="%(asctime)s %(name)s: %(levelname)s %(message)s")
-    asyncio.run(main())
+    parser = argparse.ArgumentParser(description="Moonscale server - reads scale, provides websocket")
+    parser.add_argument( "-r", "--random", help="Sets random weights for testing purposes", action="store_true", required=False)
+    parser.add_argument( "-v", "--verbose", help="Set logging to debug mode", action="store_true")
+    args = parser.parse_args()
+    # add the handlers to the logger
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
+
+    asyncio.run(main(args))
 
 
