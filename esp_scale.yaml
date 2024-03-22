@@ -9,6 +9,8 @@ wifi:
       password: !secret apollopassword
     - ssid: !secret astroiotssid
       password: !secret astroiotpassword
+    - ssid: !secret hackerspacessid
+      password: !secret hackerspacepassword
   # manual_ip:
     # Set this to the IP of the ESP
     # static_ip: 192.168.5.110
@@ -18,21 +20,21 @@ wifi:
 sensor:
   - platform: hx711
     name: "HX711 Value"
-    dout_pin: D4
-    clk_pin: D3
+    dout_pin: D6
+    clk_pin: D5
     gain: 128
     update_interval: 1s
     filters:
          - calibrate_linear:
              - -54400 -> 0
-             - 1547573 -> 65 
+             - 1547573 -> 65
     unit_of_measurement: kg
 
     # filters:
     #       - lambda: |-
     #           auto first_mass = 105700.0; // first known mass was 0kg
-    #           auto first_value = 0; // value for the first known mass was 
-    #           auto second_mass = -75000; // second mass was 
+    #           auto first_value = 0; // value for the first known mass was
+    #           auto second_mass = -75000; // second mass was
     #           auto second_value = 500; // second value was
     #           auto r = map(x/1000, first_value, second_value, first_mass, second_mass);
     #           if (r > 0) return r;
