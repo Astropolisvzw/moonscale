@@ -27,9 +27,37 @@
                     var html = '';
                     for (var planet in obj) {
                         if (planet !== 'Mars') {
-                            html += '<div class="planet-item">';
-                            html += '<span class="planet-name">' + planet + '</span>';
-                            html += '<span class="planet-weight">' + obj[planet] + ' kg</span>';
+                            var weight = obj[planet];
+                            var weightDisplay = weight + ' kg';
+                            var itemClass = 'planet-item';
+                            var icon = '';
+
+                            // Special formatting for extreme values
+                            if (planet === 'ISS') {
+                                weightDisplay = 'WEIGHTLESS';
+                                itemClass += ' zero-g';
+                                icon = '🛰️ ';
+                            } else if (planet === 'Neutron Star' || planet === 'White Dwarf') {
+                                // Use scientific notation for extreme gravity
+                                if (weight > 1000000) {
+                                    var exponent = Math.floor(Math.log10(weight));
+                                    var mantissa = (weight / Math.pow(10, exponent)).toFixed(1);
+                                    weightDisplay = mantissa + '×10<sup>' + exponent + '</sup> kg';
+                                }
+                                itemClass += ' extreme-gravity';
+                                icon = '⭐ ';
+                            } else if (planet === 'Sun') {
+                                itemClass += ' extreme-gravity';
+                                icon = '☀️ ';
+                            } else if (planet === 'Olympus Mons') {
+                                icon = '🌋 ';
+                            } else if (weight < 0.1 * obj['Earth']) {
+                                itemClass += ' low-gravity';
+                            }
+
+                            html += '<div class="' + itemClass + '">';
+                            html += '<span class="planet-name">' + icon + planet + '</span>';
+                            html += '<span class="planet-weight">' + weightDisplay + '</span>';
                             html += '</div>';
                         }
                     }
@@ -50,6 +78,15 @@
                 };
             };
             connect();
+
+            // Make MARS label shake every 30 seconds
+            setInterval(function() {
+                var label = document.getElementsByClassName('planet-label')[0];
+                label.classList.add('shake');
+                setTimeout(function() {
+                    label.classList.remove('shake');
+                }, 500);
+            }, 30000);
         </script>
         </div>
     </body>

@@ -21,7 +21,7 @@ body, html {
 .sidebar {
   position: fixed;
   top: 10%;
-  left: 2%;
+  right: 2%;
   width: 280px;
   max-height: 80%;
   overflow-y: auto;
@@ -38,10 +38,19 @@ body, html {
   justify-content: space-between;
   padding: 8px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
 }
 
 .planet-item:last-child {
   border-bottom: none;
+}
+
+.planet-item:hover {
+  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .planet-name {
@@ -55,6 +64,63 @@ body, html {
   color: white;
   font-size: 18px;
   text-shadow: 1px 1px 2px #000;
+}
+
+/* Extreme gravity styling */
+.extreme-gravity {
+  background: linear-gradient(90deg, rgba(255, 100, 50, 0.3), transparent);
+  border-left: 3px solid rgba(255, 80, 30, 0.8);
+  padding-left: 8px !important;
+}
+
+.extreme-gravity .planet-name,
+.extreme-gravity .planet-weight {
+  color: #ffcc99;
+  font-size: 19px;
+  text-shadow: 0 0 5px rgba(255, 100, 0, 0.7), 1px 1px 2px #000;
+}
+
+/* Low gravity styling */
+.low-gravity .planet-name,
+.low-gravity .planet-weight {
+  color: #ccf0ff;
+  font-size: 16px;
+}
+
+/* Zero-g styling */
+.zero-g {
+  background: linear-gradient(90deg, rgba(100, 200, 100, 0.3), transparent);
+  border-left: 3px solid rgba(80, 200, 80, 0.8);
+  padding-left: 8px !important;
+}
+
+.zero-g .planet-weight {
+  color: #90ff90;
+  font-style: italic;
+  text-shadow: 0 0 8px rgba(100, 255, 100, 0.8), 1px 1px 2px #000;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes earthquake {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-2px, 1px); }
+  20% { transform: translate(2px, -1px); }
+  30% { transform: translate(-1px, 2px); }
+  40% { transform: translate(1px, -2px); }
+  50% { transform: translate(-2px, -1px); }
+  60% { transform: translate(2px, 1px); }
+  70% { transform: translate(-1px, -2px); }
+  80% { transform: translate(1px, 2px); }
+  90% { transform: translate(-2px, 0px); }
+}
+
+.planet-label.shake {
+  animation: earthquake 0.5s ease-in-out;
 }
 
 .textbox {
