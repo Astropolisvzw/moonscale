@@ -37,7 +37,6 @@ def update_weight_array(new_weight):
 async def main(args):
     logging.info("Astropolis scale starting ...")
     """Connect to an ESPHome device and get details."""
-    loop = asyncio.get_running_loop()
 
     def change_callback(state):
         try:
@@ -58,7 +57,7 @@ async def main(args):
             logging.error("erroring out of callback 2")
 
     # Establish connection
-    api = APIClient(loop, "esp-scale-1.local", 6053, "1WkzndV8oAZ5sqbe47rc", client_info="Moonscale")
+    api = APIClient("esp-scale-1.local", 6053, "1WkzndV8oAZ5sqbe47rc", client_info="Moonscale")
 
     async def on_connect():
         try:
@@ -88,7 +87,7 @@ async def main(args):
         zeroconf_instance=zc,
     )
     await reconnect.start()
-    await websockets.serve(weight_socket, "127.0.0.1", 5678, loop=loop)
+    await websockets.serve(lambda ws: weight_socket(ws, args.random), "127.0.0.1", 5678)
     try:
         while True:
             try:
@@ -110,12 +109,16 @@ def check_stale_weight(w, w_zero, w_date):
        return w_zero
     return w
 
-async def weight_socket(websocket, path):
+async def weight_socket(websocket, use_random=False):
     global weight
     global weight_date
     try:
         while True:
-            to_send = check_stale_weight(planet_weight.get_weight_json(weight, rounding=1), planet_weight_zero, weight_date)
+            current_weight = weight
+            if use_random:
+                current_weight = random.randrange(0, 100)
+                weight_date = get_now()
+            to_send = check_stale_weight(planet_weight.get_weight_json(current_weight, rounding=1), planet_weight_zero, weight_date)
             logging.debug(f"Sending WS: weight={to_send}\n")
             await websocket.send(to_send)
             await asyncio.sleep(1)

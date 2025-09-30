@@ -1,12 +1,13 @@
- body, html {
+body, html {
   height: 100%;
   overflow: hidden;
   margin: 0px;
+  font-family: Arial, sans-serif;
 }
 
 .bg {
   /* The image used */
-  background-image: url("background.jpg");
+  background-image: url("mars_background.jpg");
 
   /* Full height */
   height: 100%;
@@ -17,26 +18,76 @@
   background-size: cover;
 }
 
-.textbox{
+.sidebar {
+  position: fixed;
+  top: 10%;
+  left: 2%;
+  width: 280px;
+  max-height: 80%;
+  overflow-y: auto;
+  padding: 20px;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border-radius: 20px;
+  background-color: rgba(200, 100, 50, 0.75);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.planet-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.planet-item:last-child {
+  border-bottom: none;
+}
+
+.planet-name {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.planet-weight {
+  color: white;
+  font-size: 18px;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.textbox {
   position: fixed;
   top: 80%;
   left: 50%;
-  width: 400px;
-  height: 200px;
-  -moz-border-radius:30px;
-  -webkit-border-radius:30px;
-  border-radius:30px;
-  border: #solid 10px #000;
-  background-color: rgba(150,150,200,0.7);
-  margin-top: -100px; /* Negative half of height. */ 
-  margin-left: -150px; /* Negative half of width. */
+  width: 450px;
+  height: 250px;
+  -moz-border-radius: 30px;
+  -webkit-border-radius: 30px;
+  border-radius: 30px;
+  background-color: rgba(200, 100, 50, 0.7);
+  margin-top: -125px; /* Negative half of height. */
+  margin-left: -225px; /* Negative half of width. */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.moontext{
+.planet-label {
+  text-align: center;
+  text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;
+  color: white;
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.maintext {
   text-align: center;
   text-shadow: 2px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
   color: white;
-  vertical-align: middle;
-  line-height: 200px;
   font-size: 84px;
+  font-weight: bold;
 }
