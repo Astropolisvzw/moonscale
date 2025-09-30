@@ -1,0 +1,4 @@
+aioesphomeapi
+numpy
+websockets
+zeroconf

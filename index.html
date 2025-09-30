@@ -7,19 +7,39 @@
     </head>
     <body>
         <div class="bg">
-            <div class="textbox"><div class="moontext">LOADING...</div></div>
+            <div class="sidebar"></div>
+            <div class="textbox">
+                <div class="planet-label">MARS</div>
+                <div class="maintext">LOADING...</div>
+            </div>
         <script>
             function connect() {
                 var ws = new WebSocket("ws://127.0.0.1:5678/");
                 console.log("Connecting websocket")
                 ws.onmessage = function (event) {
                     var obj = JSON.parse(event.data);
-                    document.getElementsByClassName('moontext')[0].innerHTML = obj['Moon'] + ' kg';
-		    console.log("receiving" + obj['Moon'])
+
+                    // Update Mars weight in center
+                    document.getElementsByClassName('maintext')[0].innerHTML = obj['Mars'] + ' kg';
+
+                    // Update sidebar with all other planets
+                    var sidebar = document.getElementsByClassName('sidebar')[0];
+                    var html = '';
+                    for (var planet in obj) {
+                        if (planet !== 'Mars') {
+                            html += '<div class="planet-item">';
+                            html += '<span class="planet-name">' + planet + '</span>';
+                            html += '<span class="planet-weight">' + obj[planet] + ' kg</span>';
+                            html += '</div>';
+                        }
+                    }
+                    sidebar.innerHTML = html;
+
+		    console.log("receiving data: " + JSON.stringify(obj))
                 };
 
-                ws.onclose = function(e) {  
-                    console.log('socket closed try again'); 
+                ws.onclose = function(e) {
+                    console.log('socket closed try again');
                     setTimeout(function() {
                           connect();
                         }, 1000);
@@ -28,7 +48,7 @@
                 ws.onerror = function(err) {
                     console.error(err)
                 };
-            }; 
+            };
             connect();
         </script>
         </div>
