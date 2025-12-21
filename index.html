@@ -38,8 +38,12 @@
                                 itemClass += ' zero-g';
                                 icon = '🛰️ ';
                             } else if (planet === 'Neutron Star' || planet === 'White Dwarf') {
-                                // Use scientific notation for extreme gravity
-                                if (weight > 1000000) {
+                                // Filter out noise for extreme gravity objects
+                                if (obj['Earth'] < 0.01) {
+                                    weight = 0;
+                                    weightDisplay = '0 kg';
+                                } else if (weight > 1000000) {
+                                    // Use scientific notation for extreme gravity
                                     var exponent = Math.floor(Math.log10(weight));
                                     var mantissa = (weight / Math.pow(10, exponent)).toFixed(1);
                                     weightDisplay = mantissa + '×10<sup>' + exponent + '</sup> kg';
@@ -47,6 +51,11 @@
                                 itemClass += ' extreme-gravity';
                                 icon = '⭐ ';
                             } else if (planet === 'Sun') {
+                                // Filter out noise for extreme gravity objects
+                                if (obj['Earth'] < 0.01) {
+                                    weight = 0;
+                                    weightDisplay = '0 kg';
+                                }
                                 itemClass += ' extreme-gravity';
                                 icon = '☀️ ';
                             } else if (planet === 'Olympus Mons') {

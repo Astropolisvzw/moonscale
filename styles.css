@@ -71,6 +71,8 @@ body, html {
   background: linear-gradient(90deg, rgba(255, 100, 50, 0.3), transparent);
   border-left: 3px solid rgba(255, 80, 30, 0.8);
   padding-left: 8px !important;
+  min-height: 40px;  /* Fixed height to prevent shifting with scientific notation */
+  align-items: center;
 }
 
 .extreme-gravity .planet-name,
