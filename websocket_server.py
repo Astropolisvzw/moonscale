@@ -57,7 +57,11 @@ async def main(args):
             logging.error("erroring out of callback 2")
 
     # Establish connection
-    api = APIClient("esp-scale-1.local", 6053, "1WkzndV8oAZ5sqbe47rc", client_info="Moonscale")
+    api = APIClient(
+        address="esp-scale-1.local",
+        port=6053,
+        password="1WkzndV8oAZ5sqbe47rc"
+    )
 
     async def on_connect():
         try:
